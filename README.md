@@ -1,6 +1,6 @@
 # Led Stick for Light Painting
 
-A NeoPixel stick with 144 pixels controlled by a Raspberry Pi contained in a box mounted on the stick. Needs 5 Volt 8 Amp powersuppy.
+A NeoPixel stick with 144 pixels controlled by a Raspberry Pi contained in a box mounted on the stick. Needs 5 Volt 8 Amp powersupply.
 Control Box with 16x2 Lcd display to choose pattern to be 'painted'. 
 
 Project started in early 2013.

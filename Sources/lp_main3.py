@@ -1,0 +1,231 @@
+#!/usr/bin/python
+# coding: utf-8
+#----------------------------------------------------------
+#   Draw Pattern 2 Main Loop for the Light Painting System
+#
+#   Peter K. Boxler, February 2015
+#
+#   NeoPixel Products here: 
+#   ----> https://www.adafruit.com/products/1506
+#-----------------------------------------------------------
+#
+import sys, getopt, os
+from time import sleep
+import time, datetime
+import lp_defglobal
+from neopixel import *
+import random
+from lp_patt2 import *
+from lp_sub import *
+from lp_setup import *
+
+
+
+
+# -- Function do_pattern
+#--------------------------------------------------------
+def do_pattern2 (strip,numberpatt):
+
+    if lp_defglobal.debug: 
+        print "----doing pattern %d " % numberpatt
+        
+    sleep(lp_defglobal.waitdraw)                 # wait n sec before drawing starts
+    
+    if numberpatt==1:
+#        lp_defpattern.iteration_pattern=2
+        draw_pattern_21 (strip, 0,0,lp_defglobal.brightness )
+
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    if numberpatt==2:
+ #       lp_defpattern.iteration_pattern=4
+        draw_pattern_21 (strip, 0, 1,lp_defglobal.brightness)
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    if numberpatt==3:
+        draw_pattern_21 (strip, 1,2 ,lp_defglobal.brightness)
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+    if numberpatt==4:
+        draw_pattern_21 (strip, 1,3, lp_defglobal.brightness )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    elif numberpatt==5:
+        draw_pattern_21 (strip, 1,4, lp_defglobal.brightness )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    elif numberpatt==6:
+        draw_pattern_21 (strip, 2,5, lp_defglobal.brightness )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+        
+    elif numberpatt==7:
+        draw_pattern_21 (strip, 2,6, lp_defglobal.brightness  )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+    elif numberpatt==8:                 # Snake 1---------------------
+        draw_pattern_21 (strip, 2,7, lp_defglobal.brightness  )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    elif numberpatt==9:                 # Snake 2 ----------------------
+        prepCol_1()
+        showCol(strip)
+        sleep(9)
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    elif numberpatt==10:                # Snake 3 ----------------------
+        prepCol_1()
+        showCol_blink(strip,300,100)  
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+    elif numberpatt==11:
+        prepCol_1()
+        showCol_blink(strip,200,20)
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+    elif numberpatt==12:
+        draw_pattern_21 (strip, 2,0, lp_defglobal.brightness  )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+    elif numberpatt==13:
+        draw_pattern_21 (strip, 2,6, lp_defglobal.brightness  )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+    elif numberpatt==14:
+        draw_pattern_21 (strip, 2,7, lp_defglobal.brightness  )
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+    elif numberpatt==15:
+        background=[160,0,0]
+        draw_pattern_21 (strip, 2,0, lp_defglobal.brightness  )
+
+        set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+        pass
+
+      
+    return(0)    
+
+
+#--#----------------------------------------------
+# Main Loop Typ 3
+#---------------------------------------------
+def main_loop_type3(GPIO):
+
+    ready_yes=0
+
+    i=1                 # i contains pattern number
+                        # pattern are in  pattern_description
+    anzpatt=len(lp_defpattern2.pattern_description)   # number of patterns found
+    while True:         # run forever - ctrl-C interrupts
+                        # check termination in variable lp_defglobal.do_term    
+        if lp_defglobal.debug:
+            print "Type 2 starting while loop, i %d  anzpatt %d" % (i,anzpatt)
+        if  lp_defglobal.do_term: break             # break from main Loop
+        if  lp_defglobal.type_switch: break             # break from main Loop
+
+        sleep(0.5)       
+        if i > anzpatt: 
+            i=1	 # maxbild ist Anzahl pattern gefunden, gehe rundum, wenn am Ende
+        GPIO.output(lp_defglobal.led_green, False)   # green led off
+
+        lp_defglobal.msg_line[0]='{:<12}'.format(lp_defpattern2.pattern_description[i][0:12]) \
+        +    " "    \
+        +   '{:>3}'.format(str(lp_defglobal.brightness))
+
+ 
+        if lp_defpattern2.pattern_time[i]=="man":
+            showtime="man"
+        else:
+            showtime=str(lp_defpattern2.pattern_time[i]*lp_defglobal.iteration_pattern) + "s"
+        
+        lp_defglobal.msg_line[1]='{:<3}'.format(showtime) \
+        +   '{:>2}'.format(str(lp_defglobal.iteration_pattern)) \
+        +   '{:>2}'.format(str(lp_defglobal.gamma)) \
+        +   '{:>2}'.format(str(lp_defglobal.waitdraw)) + "s"\
+        +  '{:>6}'.format (str(i)+ "/" + str(anzpatt))     # format second line of display
+            
+        if lp_defglobal.debug: print lp_defglobal.msg_line
+        showmsg( lp_defglobal.msg_line)                 # show pattern number on led display
+        ret=button_pressed(GPIO)                # wait for button Press
+        if lp_defglobal.debug: print "Return button_pressed: %s" % lp_defglobal.but[ret]
+        sleep(0.1)                          # for testing
+            
+            # process button press
+            # is either RED, BLACK or SETUP
+            
+        if ret==lp_defglobal.BLACK:      # user wants next pattern
+            i=i+1
+            continue        # continue loop with next pattern
+            
+        elif ret==lp_defglobal.SETUP:
+            if do_setup(GPIO):
+                if lp_defglobal.debug: 
+                    print "Return from do_setup %d Type Change" % ret 
+                break
+                
+                
+        elif ret==lp_defglobal.REDSHORT:       # user wants to paint current image
+            GPIO.output(lp_defglobal.led_green, True) # give the green light, ready to draw, wait for red key
+            
+            if ready_yes:               # eingebaut, damit schneller reagiert.
+    
+                if lp_defpattern2.pattern_time[i]=="man":
+                    showtime="man"
+                else:
+                    showtime=str(lp_defpattern2.pattern_time[i]*lp_defglobal.iteration_pattern) + "s"
+                    
+                lp_defglobal.msg_line[1]='{:<6}'.format(showtime)  \
+                    + '{:^4}'.format(lp_defglobal.direction[lp_defglobal.direction_flag])  \
+                    + '{:>6}'.format("ready")    # format second line of display
+
+                showmsg( lp_defglobal.msg_line)   # display ready message
+
+#               now we are ready to paint
+                ret=button_pressed(GPIO)                # ready to draw, wait for user input
+                if ret==lp_defglobal.BLACK:                      # user wants next image
+                    GPIO.output(lp_defglobal.led_green, False)   # switch off green led
+                    break                        # continue loop with next imagew
+                    
+                elif ret==lp_defglobal.REDSHORT:      # user wants to paint current image, stay with this image after paint
+                    if lp_defglobal.debug: print "bei lp_defglobal.REDSHORT"
+                    GPIO.output(lp_defglobal.led_green, False)   # green led off
+                    lp_defglobal.msg_line[1]='{:<6}'.format(showtime)  \
+                    + '{:^4}'.format(lp_defglobal.direction[lp_defglobal.direction_flag])  \
+                    + '{:>6}'.format("paint")    # format second line of display
+                    showmsg( lp_defglobal.msg_line)   # display PAINT message 
+
+
+            lp_defglobal.lcd.backlight(lp_defglobal.lcd.OFF)    # Display off while painting
+
+    #---------------- paint pattern -------------
+            do_pattern2(lp_defglobal.strip,i)        # patern (i) 
+    #---------------- paint pattern -------------
+
+            lp_defglobal.lcd.backlight(lp_defglobal.lcd.ON)
+
+    
+
+            GPIO.output(lp_defglobal.led_green, True)   # green led off
+#                lp_defglobal.msg_line[1]='{:<6}'.format(str(lp_defglobal.column_delay_time) + "ms") \
+#                + '{:^4}'.format(lp_defglobal.direction[lp_defglobal.direction_flag])  \
+#                + '{:>6}'.format("DONE")    # format second line of display
+#                showmsg( lp_defglobal.msg_line)   # display DONE message 
+                    
+#                sleep(1)
+            set_led(lp_defglobal.strip,lp_defglobal.BLACKCOL)                      # set all pixels to BLACK
+
+          
+        #  der loop läuft, bis ein Keyboard interrupt kommt, ctrl-c ----
+
+
+    pass                        
+
+    return(0)    
+#---- End Main Loop Typ2-------------------------------------------------------------
+#
+
+
